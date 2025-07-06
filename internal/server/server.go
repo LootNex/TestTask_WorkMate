@@ -3,8 +3,8 @@ package server
 import (
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/LootNex/TestTask_WorkMate/config"
 	"github.com/LootNex/TestTask_WorkMate/internal/db"
 	"github.com/LootNex/TestTask_WorkMate/internal/handlers"
 	"github.com/LootNex/TestTask_WorkMate/internal/logger"
@@ -14,7 +14,13 @@ import (
 
 func StartServer() error {
 
+	config, err := config.ConfigLoad()
+	if err != nil {
+		log.Fatalf("cannot load config err: %v", err)
+	}
+
 	db := db.InitDB()
+
 	logger, err := logger.InitLogger()
 	if err != nil {
 		log.Fatalf("cannot initialize logger: %v", err)
@@ -30,15 +36,9 @@ func StartServer() error {
 	r.HandleFunc("/orders/{id}", handler.TaskDelete).Methods("DELETE")
 	r.HandleFunc("/orders/{id}", handler.GetResult).Methods("GET")
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		logger.Info("PORT не задан, используется порт по умолчанию: 8080")
-		port = "8080"
-	}
-
 	logger.Info("Server is running")
 
-	if err := http.ListenAndServe(":"+port, r); err != nil {
+	if err := http.ListenAndServe(":"+config.Server.Port, r); err != nil {
 		return err
 	}
 
