@@ -13,6 +13,13 @@ type TaskService struct {
 	Service db.StorageTask
 }
 
+type TaskManager interface {
+	ProcessTask(task *model.Task)
+	CreateTask() (string, error)
+	DeleteTask(id string) error
+	GetResult(id string) (*model.Task, error)
+}
+
 func NewTaskService(service db.StorageTask) *TaskService {
 	return &TaskService{
 		Service: service,
@@ -32,7 +39,7 @@ func (t *TaskService) ProcessTask(task *model.Task) {
 	task.Status = "done"
 }
 
-func (t *TaskService) CreateOrder() (string, error) {
+func (t *TaskService) CreateTask() (string, error) {
 
 	id := uuid.New().String()
 	status := "created"
@@ -56,7 +63,7 @@ func (t *TaskService) CreateOrder() (string, error) {
 
 }
 
-func (t *TaskService) DeleteOrder(id string) error {
+func (t *TaskService) DeleteTask(id string) error {
 
 	task, err := t.Service.Get(id)
 

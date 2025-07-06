@@ -19,14 +19,15 @@ func StartServer() error {
 	if err != nil {
 		log.Fatalf("cannot initialize logger: %v", err)
 	}
+	defer logger.Sync()
 
 	taskservice := service.NewTaskService(db)
 
 	handler := handlers.NewHandler(taskservice, logger)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/orders", handler.CreateOrder).Methods("POST")
-	r.HandleFunc("/orders/{id}", handler.DeleteOrder).Methods("DELETE")
+	r.HandleFunc("/orders", handler.TaskCreate).Methods("POST")
+	r.HandleFunc("/orders/{id}", handler.TaskDelete).Methods("DELETE")
 	r.HandleFunc("/orders/{id}", handler.GetResult).Methods("GET")
 
 	port := os.Getenv("PORT")

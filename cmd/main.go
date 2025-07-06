@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	err := godotenv.Load()
+	err := godotenv.Load("config/.env")
 	if err != nil {
 		log.Println("Файл .env не найден или не удалось загрузить")
 	}

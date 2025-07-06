@@ -12,9 +12,3 @@ func InitLogger() (*zap.Logger, error) {
 	return log, nil
 
 }
-
-func Sync(Log *zap.Logger) {
-	if Log != nil {
-		_ = Log.Sync()
-	}
-}
